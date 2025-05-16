@@ -35,7 +35,7 @@ Este tutorial guía al usuario a través de los pasos necesarios para desplegar 
 
 ## **Mantenido Por**
 
-**PINDU**
+**GRUPO12**
 
 ## **Descargo de Responsabilidad**
 
