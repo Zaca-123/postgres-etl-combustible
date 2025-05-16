@@ -19,19 +19,24 @@ Existen formas normales más avanzadas como la Cuarta Forma Normal (4NF), Quinta
 */
 CREATE TABLE public.departamento (
     id SERIAL PRIMARY KEY,
-    nombe VARCHAR(50) NOT NULL
+    nombe VARCHAR(50) NOT NULL,
+    nombre_completo VARCHAR(50),
     CONSTRAINT fk_provincia FOREIGN KEY (provincia_id) REFERENCES public.provincia(id),
 );
 
 CREATE TABLE public.provincia (
     id SERIAL PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL
+    nombre VARCHAR(50) NOT NULL,
+    nombre_completo VARCHAR(50)
     
 );
 
 CREATE TABLE public.registro (
     id SERIAL PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL
+    nombre VARCHAR(50) NOT NULL,
+    nombre_completo VARCHAR(50),
+    codigo_postal VARCHAR(10),
+    denominacion VARCHAR(50),
     CONSTRAINT fk_provincia FOREIGN KEY (provincia_id) REFERENCES public.provincia(id),
 );
 
@@ -39,6 +44,11 @@ CREATE TABLE public.transferencia (
     id SERIAL PRIMARY KEY,
     descripcion VARCHAR(50) NOT NULL,
     fecha DATE NOT NULL,
+    automotor_origen VARCHAR(50),
+    automotor_anio_modelo INT,
+    automotor_tipo_codigo VARCHAR(50),
+    automotor_tipo_descripcion VARCHAR(50),
+    automotor_modelo_descripcion VARCHAR(50),
     CONSTRAINT fk_departamento FOREIGN KEY (departamento_id) REFERENCES public.departamento(id),
     CONSTRAINT fk_provincia FOREIGN KEY (provincia_id) REFERENCES public.provincia(id),
     CONSTRAINT fk_registro FOREIGN KEY (registro_id) REFERENCES public.registro(id)
@@ -88,6 +98,7 @@ CREATE TEMPORARY TABLE temp_registro(
     telefono VARCHAR,
     horario_atencion VARCHAR,
     provincia_id VARCHAR
+    nombre_completo VARCHAR
 
 )
 
@@ -123,8 +134,127 @@ CREATE TEMPORARY TABLE temp_transferencia(
 Cargo los datos en las tablas temporales
 */
 
+COPY provincias_temp
+FROM '/datos/provincias.csv' DELIMITER ',' CSV HEADER;
+
+INSERT INTO
+    public.provincia (
+        id,
+        nombre,
+        nombre_completo,
+        centroide_lat,
+        centroide_lon,
+        categoria
+    )
+SELECT
+    id::INTEGER,
+    nombre,
+    nombre_completo,
+    centroide_lat,
+    centroide_lon,
+    categoria
+FROM provincias_temp;
+
+COPY temp_departamentos
+FROM '/datos/departamentos.csv' DELIMITER ',' CSV HEADER;
+
+INSERT INTO
+    public.departamento (
+        id,
+        nombre,
+        nombre_completo,
+        centroide_lat,
+        centroide_lon,
+        categoria,
+        provincia_id
+    )
+SELECT
+    id::INTEGER,
+    nombre,
+    nombre_completo,
+    centroide_lat,
+    centroide_lon,
+    categoria,
+    provincia_id::INTEGER
+FROM temp_departamentos;
 
 
+COPY temp_registros
+FROM '/datos/listado-registros-seccionales-202504.csv' DELIMITER ',' CSV HEADER;
+INSERT INTO
+    public.registro (
+        id,
+        nombre,
+        nombre_completo,
+        provincia_id
+    )
+SELECT
+    id::INTEGER,
+    nombre,
+    nombre_completo,
+    provincia_id::INTEGER
+FROM temp_registros;
 
+COPY temp_transferencia
+FROM '/datos/dnrpa-transferencias-autos-202504.csv' DELIMITER ',' CSV HEADER;
 
-)
+/*
+Cargo los datos en las tablas definitivas
+*/
+
+INSERT INTO
+    public.provincia (id, nombre)
+SELECT DISTINCT
+    titulaer_domicilio_provincia_id,
+    titular_domicilio_provincia
+FROM temp_transferencia
+WHERE
+    titular_domicilio_provincia_id NOT IN (
+        SELECT id
+        FROM public.provincia
+    );
+
+INSERT INTO
+    public.departamento (id, nombre)
+SELECT DISTINCT
+    titular_domicilio_departamento_id,
+    titular_domicilio_departamento
+FROM temp_transferencia
+WHERE
+    titular_domicilio_departamento_id NOT IN (
+        SELECT id
+        FROM public.departamento
+    );
+
+INSERT INTO
+    public.registro (id, nombre,codigo_postal,denominacion)
+SELECT DISTINCT
+    id_registro_seccional,
+    registro_seccional_descripcion,
+    codigo_postal,
+    denominacion
+FROM temp_transferencia
+WHERE
+    id_registro_seccional NOT IN (
+        SELECT id
+        FROM public.registro
+    );
+
+INSERT INTO 
+    public.transferencia (id,descripcion,fecha,automotor_origen,automotor_anio_modelo,automotor_tipo_codigo,automotor_tipo_descripcion,automotor_modelo_descripcion)
+SELECT DISTINCT
+    id,
+    descripcion,
+    fecha,
+    automotor_origen,
+    automotor_anio_modelo,
+    automotor_tipo_codigo,
+    automotor_tipo_descripcion,
+    automotor_modelo_descripcion
+FROM temp_transferencia
+WHERE
+    id NOT IN (
+        SELECT id
+        FROM public.transferencia
+    );
+    
