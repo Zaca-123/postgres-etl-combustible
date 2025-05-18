@@ -1,10 +1,9 @@
-# **ETL para la carga de *`datasets`* de precios de *`combustible`* en Argentina**
-En este repositorio se desarrollara una investigación y análisis sobre datasets de precios de combustibles en surtidor, utilizando diversas herramientas que nos seran de gran ayuda para comprender este tipo de analisis.
+# **ETL para la carga de *`datasets`* de transferencias de *`vehiculos`* en Argentina**
+
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Apache Superset](https://img.shields.io/badge/Apache_Superset-FF5733?style=for-the-badge&logo=apache-superset&logoColor=white)
 ![pgAdmin](https://img.shields.io/badge/pgAdmin-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Combustible](https://img.shields.io/badge/Combustible-FF6B00?style=for-the-badge&logo=fire&logoColor=white)
 ![Argentina](https://img.shields.io/badge/Argentina-74ACDF?style=for-the-badge&logo=flag&logoColor=white)
 
 
@@ -13,7 +12,7 @@ En este repositorio se desarrollara una investigación y análisis sobre dataset
 Los datasets utilizados en este proyecto pueden descargarse desde el portal oficial de datos abiertos del gobierno de Argentina:  
 [https://datos.gob.ar/dataset](https://datos.gob.ar/dataset)
 
-Este portal proporciona información pública en formatos reutilizables, incluyendo datos relacionados con casos de dengue en Argentina.
+Este portal proporciona información pública en formatos reutilizables, incluyendo datos relacionados con transferencias de vehiculos en Argentina.
 
 ## **Resumen del Tutorial**
 
@@ -21,8 +20,7 @@ Este tutorial guía al usuario a través de los pasos necesarios para desplegar 
 
 1. Levantar los servicios con Docker.
 2. Configurar la conexión a la base de datos en Apache Superset.
-3. Ejecutar consultas SQL para analizar los datos de casos de dengue.
-4. Crear gráficos y tableros interactivos para la visualización de datos.
+3. Ejecutar consultas SQL para analizar los datos de casos de transferencias.
 
 ## **Palabras Clave**
 
@@ -44,9 +42,9 @@ El código proporcionado se ofrece "tal cual", sin garantía de ningún tipo, ex
 
 ## **Descripción del Proyecto**
 
-Este proyecto implementa un proceso ETL (Extract, Transform, Load) para la carga y análisis de datos relacionados con casos de dengue en Argentina. Utiliza herramientas modernas como Docker, PostgreSQL, Apache Superset y pgAdmin para facilitar la gestión, análisis y visualización de datos.
+Este proyecto implementa un proceso ETL (Extract, Transform, Load) para la carga y análisis de datos relacionados con transferencias de vehiculos en Argentina. Utiliza herramientas modernas como Docker, PostgreSQL, Apache Superset y pgAdmin para facilitar la gestión, análisis y visualización de datos.
 
-El objetivo principal es proporcionar una solución escalable y reproducible para analizar datos de dengue por grupo etario, departamento y provincia, permitiendo la creación de tableros interactivos y gráficos personalizados.
+El objetivo principal es proporcionar una solución escalable y reproducible para analizar datos de transferencias de vehiculos por registros secional, departamento y provincia, permitiendo la creación de tableros interactivos.
 
 ## **Características Principales**
 
@@ -146,22 +144,19 @@ Accede a Apache Superset y crea una conexión a la base de datos PostgreSQL en l
 
 ### **2. Consultas SQL**
 
-#### **Consulta 1: Casos por grupo etario, departamento y provincia**
+#### **Consulta 1: **
 
 
-#### **Consulta 2: Casos por grupo etario con más de 20,000 casos**
-
-
-### **3. Creación de Gráficos y Tableros**
+#### **Consulta 2: **
 
 
 ## **Estructura del Proyecto**
 
 ```
-postgres-etl/
+postgres-etl-transferencias/
 ├── docker-compose.yml       # Configuración de Docker Compose
 ├── init.sh                  # Script de inicialización
-├── data/                    # Carpeta para almacenar datasets
-├── sql/                     # Consultas SQL predefinidas
+├── datos/                   # Carpeta para almacenar datasets
+├── consultas_sql/           # Consultas SQL predefinidas
 └── README.md                # Documentación del proyecto
 ```

@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 echo "Inicializamos el usuario de superset"
 docker compose exec -it superset superset fab create-admin \
               --username admin \
