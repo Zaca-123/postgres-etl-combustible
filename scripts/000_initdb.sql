@@ -17,17 +17,18 @@ Las formas normales son reglas que se aplican a las bases de datos relacionales 
 3. Tercera Forma Normal (3NF): Una tabla está en 3NF si está en 2NF y además, los campos no clave no deben tener dependencias entre sí. Es decir, cada campo no clave debe depender solo de la clave primaria.
 Existen formas normales más avanzadas como la Cuarta Forma Normal (4NF), Quinta Forma Normal (5NF) o la Forma Normal de Boyce-Codd (BCNF), pero las tres primeras son las más utilizadas y suelen ser suficientes para la mayoría de las aplicaciones.
 */
-CREATE TABLE public.departamento (
-    id SERIAL PRIMARY KEY,
-    nombe VARCHAR(50) NOT NULL,
-    nombre_completo VARCHAR(50),
-    CONSTRAINT fk_provincia FOREIGN KEY (provincia_id) REFERENCES public.provincia (id),
-);
 
 CREATE TABLE public.provincia (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     nombre_completo VARCHAR(50)
+);
+
+CREATE TABLE public.departamento (
+    id SERIAL PRIMARY KEY,
+    nombe VARCHAR(50) NOT NULL,
+    nombre_completo VARCHAR(50),
+    CONSTRAINT fk_provincia FOREIGN KEY (provincia_id) REFERENCES public.provincia (id),
 );
 
 CREATE TABLE public.registro (
@@ -95,7 +96,8 @@ CREATE TEMPORARY TABLE temp_registro (
     codigo_postal VARCHAR,
     telefono VARCHAR,
     horario_atencion VARCHAR,
-    provincia_id VARCHAR nombre_completo VARCHAR
+    provincia_id VARCHAR,
+    nombre_completo VARCHAR
 )
 
 CREATE TEMPORARY TABLE temp_transferencia (
@@ -130,7 +132,8 @@ CREATE TEMPORARY TABLE temp_transferencia (
 Cargo los datos en las tablas temporales
 */
 
-COPY provincias_temp
+/
+COPY temp_provincia
 FROM '/datos/provincias.csv' DELIMITER ',' CSV HEADER;
 
 INSERT INTO
@@ -151,7 +154,7 @@ SELECT
     categoria
 FROM provincias_temp;
 
-COPY temp_departamentos
+COPY temp_departamento
 FROM '/datos/departamentos.csv' DELIMITER ',' CSV HEADER;
 
 INSERT INTO
@@ -174,7 +177,7 @@ SELECT
     provincia_id::INTEGER
 FROM temp_departamentos;
 
-COPY temp_registros
+COPY temp_registro
 FROM '/datos/listado-registros-seccionales-202504.csv' DELIMITER ',' CSV HEADER;
 
 INSERT INTO
@@ -205,7 +208,7 @@ SELECT DISTINCT
     titular_domicilio_provincia
 FROM temp_transferencia
 WHERE
-    titular_domicilio_provincia_id NOT IN(
+    titular_domicilio_provincia_id NOT IN (
         SELECT id
         FROM public.provincia
     );
@@ -217,7 +220,7 @@ SELECT DISTINCT
     titular_domicilio_departamento
 FROM temp_transferencia
 WHERE
-    titular_domicilio_departamento_id NOT IN(
+    titular_domicilio_departamento_id NOT IN (
         SELECT id
         FROM public.departamento
     );
@@ -236,7 +239,7 @@ SELECT DISTINCT
     denominacion
 FROM temp_transferencia
 WHERE
-    id_registro_seccional NOT IN(
+    id_registro_seccional NOT IN (
         SELECT id
         FROM public.registro
     );
@@ -263,7 +266,7 @@ SELECT DISTINCT
     automotor_modelo_descripcion
 FROM temp_transferencia
 WHERE
-    id NOT IN(
+    id NOT IN (
         SELECT id
         FROM public.transferencia
     );
