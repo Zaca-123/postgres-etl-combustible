@@ -28,7 +28,8 @@ CREATE TABLE public.departamento (
     id SERIAL PRIMARY KEY,
     nombe VARCHAR(50) NOT NULL,
     nombre_completo VARCHAR(50),
-    CONSTRAINT fk_provincia FOREIGN KEY (provincia_id) REFERENCES public.provincia (id),
+    provincia_id INT,
+    CONSTRAINT fk_provincia FOREIGN KEY (provincia_id) REFERENCES public.provincia (id)
 );
 
 CREATE TABLE public.registro (
@@ -37,6 +38,7 @@ CREATE TABLE public.registro (
     nombre_completo VARCHAR(50),
     codigo_postal VARCHAR(10),
     denominacion VARCHAR(50),
+    provincia_id INT,
     CONSTRAINT fk_provincia FOREIGN KEY (provincia_id) REFERENCES public.provincia (id),
 );
 
@@ -49,6 +51,9 @@ CREATE TABLE public.transferencia (
     automotor_tipo_codigo VARCHAR(50),
     automotor_tipo_descripcion VARCHAR(50),
     automotor_modelo_descripcion VARCHAR(50),
+    departamento_id INT,
+    provincia_id INT,
+    registro_id INT,
     CONSTRAINT fk_departamento FOREIGN KEY (departamento_id) REFERENCES public.departamento (id),
     CONSTRAINT fk_provincia FOREIGN KEY (provincia_id) REFERENCES public.provincia (id),
     CONSTRAINT fk_registro FOREIGN KEY (registro_id) REFERENCES public.registro (id)

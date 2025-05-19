@@ -4,6 +4,7 @@ SELECT
     COUNT(*) AS cantidad
 FROM
     transferencia
+    INNER JOIN automotor ON transferencia.automotor_id = automotor.id
     INNER JOIN registro_seccional ON automotor.registro_seccional_id = registro_seccional.id
 GROUP BY
     registro_seccional.descripcion,
@@ -16,6 +17,7 @@ SELECT
     COUNT(*) AS cantidad
 FROM
     transferencia
+    INNER JOIN automotor ON transferencia.automotor_id = automotor.id
     INNER JOIN tipo_automotor ON automotor.tipo_automotor_id = tipo_automotor.id
 GROUP BY
     tipo_automotor.codigo,
@@ -24,6 +26,7 @@ GROUP BY
 
 SELECT automotor.tramite_fecha, automotor.automotor_origen, COUNT(*) AS cantidad
 FROM transferencia
+    INNER JOIN automotor ON transferencia.automotor_id = automotor.id
 GROUP BY
     automotor.tramite_fecha,
     automotor.automotor_origen

@@ -144,10 +144,49 @@ Accede a Apache Superset y crea una conexión a la base de datos PostgreSQL en l
 
 ### **2. Consultas SQL**
 
-#### **Consulta 1: **
+#### **Consulta 1:Muestra cuantas transferencias de vehiculos ocurrieron agrupando por registro seccional y anio del vehiculo **
+SELECT
+    registro_seccional.descripcion AS registro_seccional_descripcion,
+    automotor.automotor_anio_modelo,
+    COUNT(*) AS cantidad
+FROM
+    transferencia
+    INNER JOIN automotor ON transferencia.automotor_id = automotor.id
+    INNER JOIN registro_seccional ON automotor.registro_seccional_id = registro_seccional.id
+GROUP BY
+    registro_seccional.descripcion,
+    automotor.automotor_anio_modelo;
 
 
-#### **Consulta 2: **
+#### **Consulta 2:Cuenta la cantidad de transferencias por fecha del trámite y origen del automotor (nacional, importado, etc.), y ordena los resultados por fecha descendente (más reciente primero).**
+SELECT
+    automotor.tramite_fecha,
+    automotor.automotor_origen,
+    COUNT(*) AS cantidad
+FROM
+    transferencia
+    INNER JOIN automotor ON transferencia.automotor_id = automotor.id
+GROUP BY
+    automotor.tramite_fecha,
+    automotor.automotor_origen
+ORDER BY
+    automotor.tramite_fecha DESC;
+
+
+#### **Consulta 3: Agrupa y cuenta la cantidad de transferencias por código y descripción del tipo de automotor y descripción del modelo del automotor**
+SELECT
+    tipo_automotor.codigo AS automotor_tipo_codigo,
+    tipo_automotor.descripcion AS automotor_tipo_descripcion,
+    automotor.modelo_descripcion AS automotor_modelo_descripcion,
+    COUNT(*) AS cantidad
+FROM
+    transferencia
+    INNER JOIN automotor ON transferencia.automotor_id = automotor.id
+    INNER JOIN tipo_automotor ON automotor.tipo_automotor_id = tipo_automotor.id
+GROUP BY
+    tipo_automotor.codigo,
+    tipo_automotor.descripcion,
+    automotor.modelo_descripcion;
 
 
 ## **Estructura del Proyecto**
